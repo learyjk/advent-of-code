@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "typescript": "^4.9.3"
+  },
+  "scripts": {
+    "tsc": "tsc"
+  }
+}
