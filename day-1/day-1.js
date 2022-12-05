@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
-(0, fs_1.readFile)("input.txt", "utf8", (err, data) => {
+(0, fs_1.readFile)("day-1/input.txt", "utf8", (err, data) => {
     if (err)
         throw err;
     // Split the data by newline character to get an array of lines

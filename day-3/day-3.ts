@@ -1,7 +1,7 @@
 import { readFile } from "fs";
 
 const partOne = () => {
-  readFile("input.txt", "utf8", (err, data) => {
+  readFile("day-3/input.txt", "utf8", (err, data) => {
     if (err) throw err;
 
     // Split the data by newline character to get an array of lines
@@ -64,7 +64,7 @@ const lookupPriority = (char: string): number => {
 };
 
 const partTwo = () => {
-  readFile("input.txt", "utf8", (err, data) => {
+  readFile("day-3/input.txt", "utf8", (err, data) => {
     if (err) throw err;
 
     // Split the data by newline character to get an array of lines
