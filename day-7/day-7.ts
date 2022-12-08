@@ -10,6 +10,8 @@ interface FSItem {
 
 let fs: FSItem[] = [];
 
+// add the root directory, which is always present
+// note I deleted the first line of input.txt
 fs.push({ type: "dir", name: "/", children: [], parent: null });
 let root = fs[0];
 
@@ -48,6 +50,7 @@ const traverse = (dir: FSItem, inputLineNumber: number) => {
 };
 traverse(root, 0);
 
+// get size of a single directory
 const getDirectorSize = (dir: FSItem): number => {
   let size = 0;
   if (dir.type === "file") {
@@ -80,6 +83,7 @@ const getDirectoriesWithSizeLessThan = (size: number): FSItem[] => {
   return dirs;
 };
 
+// Solve
 const dirsLessThan100000 = getDirectoriesWithSizeLessThan(100000);
 //sum the sizes of the directories
 const sumOfDirsLessThan100000 = dirsLessThan100000.reduce(
@@ -88,12 +92,15 @@ const sumOfDirsLessThan100000 = dirsLessThan100000.reduce(
 );
 console.log({ sumOfDirsLessThan100000 });
 
+// PART TWO
+// Define the constants
 const DISK_SPACE = 70000000;
 const UNUSED_SPACE_NEEDED = 30000000;
 const ununsedSpace = DISK_SPACE - getDirectorSize(root);
 const delta = UNUSED_SPACE_NEEDED - ununsedSpace;
 console.log({ delta });
 
+// generic function to get dirs with size > size
 const dirsGreaterThan = (size: number): FSItem[] => {
   let dirs: FSItem[] = [];
   // traverse the fs tree
@@ -113,7 +120,9 @@ const dirsGreaterThan = (size: number): FSItem[] => {
   return dirs;
 };
 
+// get all dirs with size > delta
 const dirsGreaterThanDelta = dirsGreaterThan(delta);
+
 // find the dir in the dirsGreaterThanDelta with the smallest size
 const dirWithSmallestSize = dirsGreaterThanDelta.reduce(
   (acc, dir) => {
