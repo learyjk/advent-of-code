@@ -108,7 +108,6 @@ const checkTreeScore = (row: number, col: number): number => {
   const up = checkUpScore(row, col, treeHeight);
   const down = checkDownScore(row, col, treeHeight);
 
-  console.log({ left, right, up, down });
   return left * right * up * down;
 };
 
@@ -183,7 +182,6 @@ const checkUpScore = (row: number, col: number, treeHeight: number): number => {
 for (let row = 1; row < numRows - 1; row++) {
   for (let col = 1; col < numCols - 1; col++) {
     let scenicScore = checkTreeScore(row, col);
-    console.log(`row: ${row}, col: ${col}, score: ${scenicScore}`);
     maxScenicScore = Math.max(scenicScore, maxScenicScore);
   }
 }
