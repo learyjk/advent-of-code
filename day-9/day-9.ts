@@ -16,6 +16,7 @@ let tailPositions: Point[] = [];
 headPositions.push({ x: 0, y: 0 });
 tailPositions.push({ x: 0, y: 0 });
 
+// next head position is found using current positiong and input data
 let getNextHeadPosition = (direction: string, positions: Point[]): Point => {
   let { x, y } = positions[positions.length - 1];
   if (direction === "R") {
@@ -96,18 +97,26 @@ for (const line of lines) {
 }
 
 const tailSet: Set<string> = new Set();
+// loop through all tail positions
 for (const tailPos of tailPositions) {
+  // stringify Points and add to set to remove any duplicates
   const tailPosStr = JSON.stringify(tailPos);
   tailSet.add(tailPosStr);
 }
 
+// return the size of the set to get the number of unique tail positions
 console.log(`tailSet.size: ${tailSet.size}`);
 
+// PART TWO
+
+// rather than 2 knots, we need to track 10 now
+// mindset shift: treat current knot as the tail and knot in front as head
 const knotMap = new Map<number, Point[]>();
 for (let i = 0; i < 10; i++) {
   knotMap.set(i, [{ x: 0, y: 0 }]);
 }
 
+// modify the getNextTailPosition to take in arbitrary knots
 const getNextKnotPosition = (
   currentKnot: Point[],
   knotInFront: Point[]
@@ -190,6 +199,7 @@ for (const line of lines) {
 }
 
 const tailSetTwo: Set<string> = new Set();
+// loop through all positions of the last knot
 for (const pos of knotMap.get(9)) {
   const posStr = JSON.stringify(pos);
   tailSetTwo.add(posStr);
