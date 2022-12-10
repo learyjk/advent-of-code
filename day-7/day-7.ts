@@ -21,7 +21,7 @@ const file = readFileSync("day-7/input.txt", "utf8");
 // Split the data into rows
 const rows = file.split("\n");
 
-const traverse = (dir: FSItem, inputLineNumber: number) => {
+const buildFS = (dir: FSItem, inputLineNumber: number) => {
   if (!rows[inputLineNumber]) return;
   let [first, second, third] = rows[inputLineNumber].split(" ");
   if (!isNaN(parseInt(first, 10))) {
@@ -33,22 +33,22 @@ const traverse = (dir: FSItem, inputLineNumber: number) => {
       children: null,
       parent: dir,
     });
-    traverse(dir, inputLineNumber + 1);
+    buildFS(dir, inputLineNumber + 1);
   } else if (first === "dir") {
     // type is dir
     dir.children.push({ type: "dir", name: second, children: [], parent: dir });
-    traverse(dir, inputLineNumber + 1);
+    buildFS(dir, inputLineNumber + 1);
   } else if (first === "$" && second === "cd" && third !== "..") {
     let newDir = dir.children.find((child) => child.name === third);
-    traverse(newDir, inputLineNumber + 1);
+    buildFS(newDir, inputLineNumber + 1);
   } else if (first === "$" && second === "cd" && third === "..") {
     let newDir = dir.parent;
-    traverse(newDir, inputLineNumber + 1);
+    buildFS(newDir, inputLineNumber + 1);
   } else {
-    traverse(dir, inputLineNumber + 1);
+    buildFS(dir, inputLineNumber + 1);
   }
 };
-traverse(root, 0);
+buildFS(root, 0);
 
 // get size of a single directory
 const getDirectorSize = (dir: FSItem): number => {
@@ -98,7 +98,6 @@ const DISK_SPACE = 70000000;
 const UNUSED_SPACE_NEEDED = 30000000;
 const ununsedSpace = DISK_SPACE - getDirectorSize(root);
 const delta = UNUSED_SPACE_NEEDED - ununsedSpace;
-console.log({ delta });
 
 // generic function to get dirs with size > size
 const dirsGreaterThan = (size: number): FSItem[] => {

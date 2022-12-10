@@ -56,7 +56,6 @@ for (let move of moves) {
 
   // Perform the moves --- PART TWO ----
   let stack = columns[fromColumn];
-  console.log({ stack });
   let removedCrates = stack.splice(stack.length - numMoves, numMoves);
   columns[toColumn].push(...removedCrates);
 }

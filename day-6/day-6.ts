@@ -7,6 +7,7 @@ const checkForUniqueCharacters = (vals: string[]) => {
   const m = new Map();
   for (let val of vals) {
     if (m.has(val)) {
+      // found a duplicate, return false
       return false;
     }
     m.set(val, true);
@@ -24,8 +25,7 @@ const parseInput = (input: string) => {
     // if first, second, third, and fourth are all different characters return true
     let isUnique = checkForUniqueCharacters([first, second, third, fourth]);
     if (isUnique) {
-      console.log({ first, second, third, fourth });
-      console.log("index: ", i + 1);
+      console.log("indexPart1: ", i + 1);
       return;
     }
   }
@@ -68,8 +68,7 @@ const parseInput2 = (input: string) => {
       fourteenth,
     ]);
     if (isUnique) {
-      //console.log({ first, second, third, fourth });
-      console.log("index: ", i + 1);
+      console.log("indexPart2: ", i + 1);
       return;
     }
   }
