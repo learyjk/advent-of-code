@@ -1,6 +1,5 @@
 // import readFile
 import { readFileSync } from "fs";
-import internal = require("stream");
 
 // read the input file
 const file = readFileSync("day-10/input.txt", "utf8");
@@ -23,6 +22,7 @@ const getSignalStrength = (cycle: number, X: number): number => {
 while (rowNum < rows.length) {
   let [first, second] = rows[rowNum].split(" ");
   //   console.log(`cycle ${cycle}, X = ${X}, first = ${first}, second = ${second}`);
+
   if (cyclesOfInterest.includes(cycle)) {
     const signalStrength = getSignalStrength(cycle, X);
     // console.log({ signalStrength });
