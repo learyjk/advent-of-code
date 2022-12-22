@@ -121,114 +121,55 @@ adjacentSensors.forEach((s, index) => {
     console.log(`sensor pair ${index}`);
     console.log(s);
 });
-const getLineDirection = (x1, x2, y1, y2) => {
-    if (x2 - x1 > 0 && y2 - y1 > 0)
-        return "upright";
-    if (x2 - x1 > 0 && y2 - y1 < 0)
-        return "downright";
-    if (x2 - x1 < 0 && y2 - y1 > 0)
-        return "upleft";
-    return "downleft";
-};
-const checkPositionsAlongLineForCoverage = (sensor1, sensor2) => {
-    let s1x = sensor1.xSensor;
-    let s2x = sensor2.xSensor;
-    let s1y = sensor1.ySensor;
-    let s2y = sensor2.ySensor;
-    console.log({ s1x, s2x, s1y, s2y });
-    let direction = getLineDirection(s1x, s2x, s1y, s2y);
-    console.log({ direction });
-    console.log(sensor1.sensorCoverage);
-    if (direction === "upright") {
-        for (let x = s1x; x <= s2x; x++) {
-            //console.log({ x });
-            for (let y = s1y; y <= s2y; y++) {
-                let d = Math.abs(x - s1x) + Math.abs(y - s1y);
-                //console.log({ d });
-                // if (d === sensor1.sensorCoverage + 1) {
-                //   console.log({ x, y });
-                // }
-                let coverage = checkPositionHasCoverage(x, y);
-                if (!coverage) {
-                    console.log({ x, y });
-                }
-            }
-        }
+// returns line between adjacent sensors
+const findLineBetween = (s1, s2) => {
+    const pos = { x: 0, y: 0 };
+    let direction;
+    let left;
+    let right;
+    if (s1.xSensor > s2.xSensor) {
+        //
+        left = s1;
+        right = s2;
     }
-    if (direction === "downright") {
-        for (let x = s1x; x <= s2x; x++) {
-            //console.log({ x });
-            for (let y = s1y; y >= s2y; y--) {
-                // let d = Math.abs(x - s1x) + Math.abs(y - s1y);
-                // if (d === sensor1.sensorCoverage + 1) {
-                //   console.log({ x, y });
-                // }
-                let coverage = checkPositionHasCoverage(x, y);
-                if (!coverage) {
-                    console.log({ x, y });
-                }
-            }
-        }
+    else {
+        left = s2;
+        right = s1;
     }
+    if (left.ySensor > right.ySensor) {
+        // upright line
+        pos.x = left.xSensor;
+        pos.y = left.ySensor - left.sensorCoverage - 1;
+        direction = "upright";
+    }
+    else {
+        // downright line
+        pos.x = left.xSensor;
+        pos.y = left.ySensor + left.sensorCoverage + 1;
+        direction = "downright";
+    }
+    return {
+        pos,
+        direction,
+    };
 };
-adjacentSensors.forEach((pair) => {
-    checkPositionsAlongLineForCoverage(...pair);
+const getLineIntersection = (line1, line2) => {
+    const downRight = line1.direction === "downright" ? line1 : line2;
+    const upRight = line1.direction === "upright" ? line1 : line2;
+    const projectedUpRight = Object.assign(Object.assign({}, upRight), { pos: {
+            x: downRight.pos.x,
+            y: upRight.pos.y + (upRight.pos.x - downRight.pos.x),
+        } });
+    const halfDistance = (downRight.pos.y - projectedUpRight.pos.y) / 2;
+    const x = downRight.pos.x - halfDistance;
+    const y = downRight.pos.y - halfDistance;
+    return { x, y };
+};
+const linesFromAdjacentSensors = adjacentSensors.map((pair) => findLineBetween(...pair));
+linesFromAdjacentSensors.forEach((line) => {
+    console.log(JSON.stringify(line));
 });
-// PART TWO
-// for (let x = 0; x < 4000000; x++) {
-//   console.log(`${x}`);
-//   for (let y = 0; y < 4000000; y++) {
-//     if (!checkPositionHasCoverage(x, y)) {
-//       console.log(`no coverage at ${x} ${y}`);
-//     }
-//   }
-// PART TWO
-// look for intersection of sensor boundary lines that have dist of 2
-// let positiveLines = [];
-// let negativeLines = [];
-// const getLines = () => {
-//   for (let [sIndex, s] of sensorMap) {
-//     let positiveLinePair = [
-//       s.xSensor + s.ySensor - s.sensorCoverage,
-//       s.xSensor + s.ySensor + s.sensorCoverage,
-//     ];
-//     let negativeLinePair = [
-//       s.xSensor - s.ySensor - s.sensorCoverage,
-//       s.xSensor - s.ySensor + s.sensorCoverage,
-//     ];
-//     positiveLines.push(...positiveLinePair);
-//     negativeLines.push(...negativeLinePair);
-//   }
-// };
-// getLines();
-// console.log({ positiveLines });
-// console.log({ negativeLines });
-// let positive;
-// let negative;
-// for (let i = 0; i < positiveLines.length - 1; i++) {
-//   for (let j = i + 1; j < positiveLines.length; j++) {
-//     let p = positiveLines[i];
-//     let n = negativeLines[j];
-//     if (Math.abs(p - n) < 10000) {
-//       console.log(Math.abs(p - n));
-//     }
-//     if (Math.abs(p - n) < 10000) {
-//       positive = Math.min(p, n) + 1;
-//     }
-//     p = positiveLines[j];
-//     n = negativeLines[i];
-//     if (Math.abs(p - n) < 10000) {
-//       console.log(Math.abs(p - n));
-//     }
-//     if (Math.abs(p - n) < 3000) {
-//       negative = Math.min(p, n) + 1;
-//     }
-//   }
-// }
-// console.log({ positive, negative });
-// let x = Math.floor(positive + negative / 2);
-// let y = Math.floor(negative - positive / 2);
-// console.log({ x, y });
-// let answer = x * 4000000 + y;
-// console.log({ answer });
+const point = getLineIntersection(linesFromAdjacentSensors[0], linesFromAdjacentSensors[1]);
+console.log({ point });
+console.log(point.x * 4000000 + point.y);
 //# sourceMappingURL=day-15.js.map
