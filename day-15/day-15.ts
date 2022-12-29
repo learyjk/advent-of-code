@@ -191,6 +191,7 @@ const getLineIntersection = (line1: Line, line2: Line) => {
   const downRight = line1.direction === "downright" ? line1 : line2;
   const upRight = line1.direction === "upright" ? line1 : line2;
 
+  // don't fully understand this...
   const projectedUpRight: Line = {
     ...upRight,
     pos: {
