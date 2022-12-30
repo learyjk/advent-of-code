@@ -21,7 +21,7 @@ for (let row of rows) {
   let splitOnComma = row.split(",");
   let nums = [];
   for (let i = 0; i < splitOnComma.length; i++) {
-    nums.push(parseInt(splitOnComma[i]));
+    nums.push(parseInt(splitOnComma[i]), 10);
   }
   input.push(nums);
 }
@@ -146,3 +146,4 @@ for (let i = 0; i < input.length; i++) {
 
 console.log({ cache });
 console.log({ numPairs });
+// 415 * 2 = 830
