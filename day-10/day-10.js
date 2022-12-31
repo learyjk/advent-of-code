@@ -18,25 +18,29 @@ const getSignalStrength = (cycle, X) => {
 while (rowNum < rows.length) {
     let [first, second] = rows[rowNum].split(" ");
     //   console.log(`cycle ${cycle}, X = ${X}, first = ${first}, second = ${second}`);
+    // calculate signal strength if we are at a cycle of interest.
     if (cyclesOfInterest.includes(cycle)) {
         const signalStrength = getSignalStrength(cycle, X);
-        // console.log({ signalStrength });
         signalSum += signalStrength;
-        // console.log({ signalSum });
     }
+    // If we are in execution mode, add instruction value to X register,
+    // reset execution mode toggle, and advance to next instruction
     if (isExecuting) {
         X += parseInt(second, 10);
         isExecuting = false;
         rowNum++;
     }
     else {
+        // advance to next instruction on 'noop'
         if (first === "noop") {
             rowNum++;
         }
+        // go into executing mode for 'addx' instruction
         if (first === "addx") {
             isExecuting = true;
         }
     }
+    // increment cycle every iteration
     cycle++;
 }
 console.log({ signalSum });

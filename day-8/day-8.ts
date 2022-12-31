@@ -14,13 +14,15 @@ for (const line of lines) {
   forest.push(numbers);
 }
 
-console.log(forest);
-
 const numRows = forest.length;
 const numCols = forest[0].length;
 
+// initialize sum with all border trees, which are always visible.
 let sum = (numRows - 1) * 2 + (numCols - 1) * 2;
 
+// checkTree function returns true if a tree is visible from any direction.
+// input: row, col of tree
+// output: true/false
 const checkTree = (row: number, col: number) => {
   const treeHeight = forest[row][col];
   const left = checkLeft(row, col, treeHeight);
@@ -88,8 +90,10 @@ const checkUp = (row: number, col: number, treeHeight: number) => {
   return true;
 };
 
+// loop through entire forst (except border) and check each tree's visibility.
 for (let row = 1; row < numRows - 1; row++) {
   for (let col = 1; col < numCols - 1; col++) {
+    // if visibile, increment sum.
     if (checkTree(row, col)) sum++;
   }
 }
@@ -98,11 +102,17 @@ console.log({ sum });
 
 // PART TWO
 
+// initialize max scenic score tracker with value 0.
 let maxScenicScore = 0;
-// stop if you reach an edge or at the first tree that is the same height or taller than the tree under consideration
+
+// look out from each tree.
+// stop if you reach an edge or at the first tree that is
+// the same height or taller than the tree under consideration
 
 const checkTreeScore = (row: number, col: number): number => {
   const treeHeight = forest[row][col];
+
+  // check each direction and get scenic score looking out from that direction.
   const left = checkLeftScore(row, col, treeHeight);
   const right = checkRightScore(row, col, treeHeight);
   const up = checkUpScore(row, col, treeHeight);
@@ -116,7 +126,7 @@ const checkLeftScore = (
   col: number,
   treeHeight: number
 ): number => {
-  // check cell 1 to left of current cell
+  // check cell to left of current cell
   let score = 0;
   col--;
   while (col >= 0) {
@@ -179,6 +189,7 @@ const checkUpScore = (row: number, col: number, treeHeight: number): number => {
   return score;
 };
 
+// check scenic score for each tree in the forest.
 for (let row = 1; row < numRows - 1; row++) {
   for (let col = 1; col < numCols - 1; col++) {
     let scenicScore = checkTreeScore(row, col);

@@ -12,6 +12,7 @@ let rowNum = 0;
 let isExecuting = false;
 let CRT = [];
 while (rowNum < rows.length) {
+    // first is instruction, second is value.
     let [first, second] = rows[rowNum].split(" ");
     if (isExecuting) {
         X += parseInt(second, 10);

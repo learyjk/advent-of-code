@@ -10,6 +10,7 @@ interface Point {
   y: number;
 }
 
+// arrays that track positions for head and tail
 let headPositions: Point[] = [];
 let tailPositions: Point[] = [];
 
@@ -44,10 +45,24 @@ const getNextTailPosition = (headPos: Point): Point => {
     return { x: tailX, y: tailY };
   }
 
-  // if head is more than 1 away from tail then move tail towards head
+  // if head is more than 1 away from tail in x dir then move tail towards head
+  // right
   if (deltaX > 1) {
     tailX++;
-    // diagonal chance
+    // diagonal chance if deltaX was > 1 and deltaY is not 0.
+    /* e.g. head moves left and tail is one row below.
+    ...H..
+    ....T.
+    ......
+    ......
+    s.....
+
+    ..HT..
+    ......
+    ......
+    ......
+    s.....
+    */
     if (deltaY > 0) {
       tailY++;
     }
@@ -55,6 +70,7 @@ const getNextTailPosition = (headPos: Point): Point => {
       tailY--;
     }
   }
+  // left
   if (deltaX < -1) {
     tailX--;
     if (deltaY > 0) {
@@ -64,6 +80,7 @@ const getNextTailPosition = (headPos: Point): Point => {
       tailY--;
     }
   }
+  // down
   if (deltaY > 1) {
     tailY++;
     if (deltaX > 0) {
@@ -73,6 +90,7 @@ const getNextTailPosition = (headPos: Point): Point => {
       tailX--;
     }
   }
+  // up
   if (deltaY < -1) {
     tailY--;
     if (deltaX > 0) {
@@ -96,6 +114,7 @@ for (const line of lines) {
   }
 }
 
+// to get answer, simply put the tailPositions into a set.
 const tailSet: Set<string> = new Set();
 // loop through all tail positions
 for (const tailPos of tailPositions) {
@@ -181,9 +200,10 @@ for (const line of lines) {
   let direction = line[0];
   let distance = parseInt(line.slice(2), 10);
   for (let i = 0; i < distance; i++) {
-    // console.log(`move head ${direction} ${i}/${distance}`);
+    // move head ${direction} ${i} ${distance}`);
     for (let k = 0; k < knotMap.size; k++) {
       let currentKnot = knotMap.get(k);
+      // first knot can use getNextHeadPosition from part 1.
       if (k === 0) {
         let nextPos = getNextHeadPosition(direction, currentKnot);
         // console.log(`knot ${k} nextPos ${JSON.stringify(nextPos)}`);
@@ -198,6 +218,7 @@ for (const line of lines) {
   }
 }
 
+// similarly to part 1, store last knot positions into a set and return its size.
 const tailSetTwo: Set<string> = new Set();
 // loop through all positions of the last knot
 for (const pos of knotMap.get(9)) {
