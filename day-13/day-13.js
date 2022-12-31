@@ -1,77 +1,100 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
-const lodash_1 = require("lodash");
-let file = (0, fs_1.readFileSync)("day-13/inputExample.txt", "utf8");
-let rows = file.split("\n");
-const comparePackets = (left, right) => {
-    // zip both arrays together and iterate over values
-    let zipped = lodash_1._.zip(left, right);
-    for (let [leftVal, rightVal] of zipped) {
-        // both are numbers -> make comparison
-        console.log({ leftVal, rightVal });
-        if (rightVal === undefined) {
-            return false;
+let file = (0, fs_1.readFileSync)("day-13/input.txt", "utf-8");
+let pairs = file.trim().split("\n\n");
+// takes in list, value, or packet and return
+// return 1 if a < b, 0 if a = b, -1 if a > b
+const comparePackets = (a, b) => {
+    // handle type mismatches
+    if (Array.isArray(a) && typeof b === "number") {
+        b = [b];
+    }
+    if (typeof a === "number" && Array.isArray(b)) {
+        a = [a];
+    }
+    // base case
+    // compare integers
+    if (typeof a === "number" && typeof b === "number") {
+        if (a < b) {
+            return 1;
         }
-        else if (leftVal === undefined) {
-            return true;
+        else if (a === b) {
+            return 0;
         }
-        // } else if (leftVal == undefined) {
-        //   return true;
-        if (typeof leftVal === "number" && typeof rightVal === "number") {
-            if (leftVal > rightVal) {
-                console.log("Right side is smaller, so inputs are not in the right order");
-                return false;
+        else {
+            return -1;
+        }
+    }
+    // recursive case
+    // compare arrays
+    if (Array.isArray(a) && Array.isArray(b)) {
+        let i = 0;
+        while (i < a.length && i < b.length) {
+            let result = comparePackets(a[i], b[i]);
+            if (result === 1) {
+                return 1;
             }
-            else if (leftVal < rightVal) {
-                console.log("Left side is smaller, so inputs are in the right order");
-                return true;
+            else if (result === -1) {
+                return -1;
+            }
+            i++;
+        }
+        if (i === a.length) {
+            if (a.length === b.length) {
+                return 0;
             }
             else {
-                continue;
+                // left side packet (a) was smaller
+                return 1;
             }
         }
-        // either left or right is not a number
-        else {
-            // convert number to array
-            if (typeof leftVal === "number") {
-                leftVal = [leftVal];
-            }
-            else if (typeof rightVal === "number") {
-                rightVal = [rightVal];
-            }
-            return comparePackets(leftVal, rightVal);
+        if (i === b.length) {
+            // right side packet (b) was smaller
+            return -1;
         }
-    }
-    if (left.length > right.length) {
-        console.log(`Right side ran out of items, so inputs are not in the right order`);
-        return false;
-    }
-    else if (left.length < right.length) {
-        console.log(`Left side ran out of items, so inputs are in the right order`);
-        return true;
-    }
-    else {
-        return false;
     }
 };
-let results = [];
-for (let i = 0; i < rows.length; i++) {
-    // NOTE add newline to bottom of input.txt
-    if (rows[i] === "") {
-        const left = JSON.parse(rows[i - 2]);
-        const right = JSON.parse(rows[i - 1]);
-        const pairIndex = (i + 1) / 3;
-        // console.log(left);
-        // console.log(right);
-        let isInOrder = comparePackets(left, right);
-        console.log({ isInOrder });
-        if (isInOrder) {
-            results.push(pairIndex);
-        }
+let result = 0;
+pairs.forEach((pair, index) => {
+    let splitPair = pair.split("\n");
+    // use eval() and map each packet from string to javascript syntax
+    let [packetA, packetB] = splitPair.map(eval, splitPair);
+    if (comparePackets(packetA, packetB) === 1) {
+        // packet pairs are 1-indexed
+        result += index + 1;
     }
-}
-console.log({ results });
-let sumOfIndices = results.reduce((a, b) => a + b, 0);
-console.log({ sumOfIndices });
+});
+console.log({ result });
+// PART TWO
+// array to put packets into which we will sort later.
+let arr = [];
+pairs.forEach((pair, index) => {
+    let splitPair = pair.split("\n");
+    // use eval() and map each packet from string to javascript syntax
+    let [packetA, packetB] = splitPair.map(eval, splitPair);
+    // rather than compare packets, push them into arr this time.
+    arr.push(packetA);
+    arr.push(packetB);
+});
+// also push the indexing elements asked for in the problem statement.
+arr.push([[2]]);
+arr.push([[6]]);
+// sort using our compare function
+arr.sort(comparePackets);
+// reverse it... because.
+arr.reverse();
+let indexOf2, indexOf6;
+// get 1-indexed values for [[2]] and [[6]]
+arr.forEach((packet, index) => {
+    if (packet.toString() === "2") {
+        indexOf2 = index + 1;
+    }
+    if (packet.toString() === "6") {
+        indexOf6 = index + 1;
+    }
+});
+console.log({ indexOf2 });
+console.log({ indexOf6 });
+console.log(indexOf2 * indexOf6);
 //# sourceMappingURL=day-13.js.map
