@@ -128,9 +128,6 @@ for (let round = 0; round < 10000; round++) {
         }
       }
 
-      // divide by three
-      //itemUnderInspection = Math.floor(itemUnderInspection / 3);
-
       // part two mod
       itemUnderInspection %= mod;
 

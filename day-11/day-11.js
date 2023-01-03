@@ -117,8 +117,6 @@ for (let round = 0; round < 10000; round++) {
                     itemUnderInspection += itemUnderInspection;
                 }
             }
-            // divide by three
-            //itemUnderInspection = Math.floor(itemUnderInspection / 3);
             // part two mod
             itemUnderInspection %= mod;
             // decide which monkey to throw
