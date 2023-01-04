@@ -77,11 +77,12 @@ let board = createEmptyBoard(minX, maxX, maxY);
 const addRocks = (board: string[][], parsedInput: Coord[][]) => {
   for (let i = 0; i < parsedInput.length; i++) {
     for (let j = 1; j < parsedInput[i].length; j++) {
+      // look at two adjacent coords.
       let pos1 = parsedInput[i][j - 1];
       let pos2 = parsedInput[i][j];
       if (pos1.x === pos2.x) {
         // Vertical Line
-        let x = pos1.x - minX;
+        let x = pos1.x - minX; //offset by minX
         let startY = Math.min(pos1.y, pos2.y);
         let endY = Math.max(pos1.y, pos2.y);
         for (let y = startY; y <= endY; y++) {
@@ -101,9 +102,10 @@ const addRocks = (board: string[][], parsedInput: Coord[][]) => {
 };
 
 addRocks(board, parsedInput);
-printBoard(board);
+// printBoard(board);
 
-// easier to code with row/col variables names than x/y
+// switching to row/col notation vice x/y.
+// easier for me to think in those terms.
 type rowColCoord = {
   row: number;
   col: number;
@@ -119,6 +121,7 @@ const getNextMove = (pos: rowColCoord) => {
     // air below -> next pos is down
     return { row: nextRow, col: pos.col };
   } else {
+    // out of bounds condition
     if (pos.col - 1 < 0 || pos.col + 1 >= board[0].length) {
       return null;
     }
@@ -143,7 +146,7 @@ const partOne = (board: string[][]): number => {
   while (true) {
     pos = getNextMove(pos);
     if (!pos) {
-      // sand fell off bottom of board
+      // sand fell off bottom of board (or out of bounds)
       return unitsOfSand;
     }
     if (pos.row === 0 && pos.col === 500 - minX) {
@@ -153,12 +156,14 @@ const partOne = (board: string[][]): number => {
   }
 };
 
-// let units = partOne(board);
+// let unitsPartOne = partOne(board);
 // printBoard(board);
-// console.log({ units });
+// console.log({ unitsPartOne });
+
+// we're gonna need a wider board... use number of rows because that seems logical.
 let lengthToAdd = board.length;
 
-const modifyBaordPartTwo = (board) => {
+const modifyBoardPartTwo = (board) => {
   for (let row of board) {
     let airToAdd = [];
     for (let i = 0; i < lengthToAdd; i++) {
@@ -180,11 +185,10 @@ const modifyBaordPartTwo = (board) => {
   board.push(groundRow);
 };
 
-modifyBaordPartTwo(board);
+modifyBoardPartTwo(board);
 printBoard(board);
-let numRows = board.length;
-let numCols = board[0].length;
 
+// pretty much same as part one but for modified board width.
 const getNextMoveTwo = (pos: rowColCoord) => {
   let nextRow = pos.row + 1;
   if (nextRow === board.length) {
@@ -196,7 +200,6 @@ const getNextMoveTwo = (pos: rowColCoord) => {
     return { row: nextRow, col: pos.col };
   } else {
     if (pos.col - 1 < 0 || pos.col + 1 >= board[0].length) {
-      console.log("here");
       return null;
     }
     if (board[nextRow][pos.col - 1] === ".") {
@@ -233,6 +236,6 @@ const partTwo = (board: string[][]): number => {
   }
 };
 
-let units = partTwo(board);
+let unitsPartTwo = partTwo(board);
 printBoard(board);
-console.log({ units });
+console.log({ unitsPartTwo });
